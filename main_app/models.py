@@ -7,6 +7,13 @@ MEALS = (
   ('D', 'Dinner'),
 )
 
+class Toy(models.Model):
+  name= models.CharField(max_length=50)
+  color= models.CharField(max_length=50)
+
+  def get_absolute_url(self):
+        return reverse('toys_detail', kwargs={'pk': self.pk})
+
 # Create your models here.
 class Dog(models.Model):
   name = models.CharField(max_length=100)

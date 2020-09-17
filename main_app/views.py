@@ -1,7 +1,8 @@
 from django.shortcuts import render
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
-
-from .models import Dog
+from django.views.generic import ListView, DetailView
+from django.urls import reverse_lazy
+from .models import Dog, Toy
 
 from django.http import HttpResponse
 
@@ -31,4 +32,22 @@ class DogUpdate(UpdateView):
 class DogDelete(DeleteView):
   model= Dog
   success_url = '/dogs/'
- 
+
+
+class ToyList(ListView):
+  model = Toy
+
+class ToyDetail(DetailView):
+  model = Toy
+
+class ToyCreate(CreateView):
+  model = Toy
+  fields = ['name', 'color']
+
+class ToyUpdate(UpdateView):
+  model = Toy
+  fields = ['name', 'color']
+  
+class ToyDelete(DeleteView):
+  model = Toy
+  success_url = reverse_lazy('toys_index')
