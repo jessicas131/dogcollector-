@@ -1,9 +1,9 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import ListView, DetailView
 from django.urls import reverse_lazy
 from .models import Dog, Toy
-
+from .forms import FeedingForm
 from django.http import HttpResponse
 
 
@@ -19,7 +19,26 @@ def dogs_index(request):
 
 def dogs_detail(request, dog_id):
   dog = Dog.objects.get(id=dog_id)
-  return render(request, 'dogs/detail.html', { 'dog': dog })
+
+  #grab the feeding forms you made in forms.py 
+  feeding_form = FeedingForm()
+  return render(request, 'dogs/detail.html', {
+    # include the dog and feeding_form in the context
+    'dog': dog, 'feeding_form': feeding_form
+  })
+
+def add_feeding(request, dog_id):
+  # create a ModelForm instance using the data in request.POST
+  form = FeedingForm(request.POST)
+  # validate the form
+  if form.is_valid():
+    # don't save the form to the db until it
+    # has the dog_id assigned
+    new_feeding = form.save(commit=False)
+    new_feeding.dog_id = dog_id
+    new_feeding.save()
+  return redirect('detail', dog_id=dog_id)
+
 
 class DogCreate(CreateView):
   model = Dog
