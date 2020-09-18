@@ -19,12 +19,15 @@ def dogs_index(request):
 
 def dogs_detail(request, dog_id):
   dog = Dog.objects.get(id=dog_id)
-
+  # this is for the toys that the dog doesnt have 
+  toys_dog_doesnt_have = Toy.objects.exclude(id__in = dog.toys.all().values_list('id'))
   #grab the feeding forms you made in forms.py 
   feeding_form = FeedingForm()
   return render(request, 'dogs/detail.html', {
     # include the dog and feeding_form in the context
-    'dog': dog, 'feeding_form': feeding_form
+    'dog': dog, 'feeding_form': feeding_form,
+    # display the toys the dog doesnt have with this:
+    'toys': toys_dog_doesnt_have
   })
 
 def add_feeding(request, dog_id):
@@ -37,6 +40,11 @@ def add_feeding(request, dog_id):
     new_feeding = form.save(commit=False)
     new_feeding.dog_id = dog_id
     new_feeding.save()
+  return redirect('detail', dog_id=dog_id)
+
+def assoc_toy(request, dog_id, toy_id):
+  # Note that you can pass a toy's id instead of the whole object
+  Dog.objects.get(id=dog_id).toys.add(toy_id)
   return redirect('detail', dog_id=dog_id)
 
 
