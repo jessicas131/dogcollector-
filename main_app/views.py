@@ -50,7 +50,7 @@ def assoc_toy(request, dog_id, toy_id):
 
 class DogCreate(CreateView):
   model = Dog
-  fields = '__all__'
+  fields = ['name','breed', 'description', 'age']
 
 class DogUpdate(UpdateView):
   model = Dog
